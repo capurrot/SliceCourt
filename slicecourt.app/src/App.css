@@ -1,0 +1,447 @@
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap");
+
+/* ==== BASE ==== */
+
+body {
+  font-family: "Outfit", sans-serif !important;
+  min-height: 100vh;
+}
+
+.theme-australian {
+  position: relative;
+  background: url("images/australian.png") no-repeat center center fixed;
+  background-size: cover;
+  color: #ffffff;
+  min-height: 100vh;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.theme-australian::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* sfondo semi-trasparente */
+  z-index: 1;
+}
+
+/* Tutti gli elementi figli vengono portati sopra l’overlay */
+.theme-australian > * {
+  position: relative;
+  z-index: 2;
+}
+
+.theme-australian .slam-border {
+  border: 3px solid #00205b !important;
+}
+
+.theme-australian .card,
+.theme-australian .slot {
+  background-color: #ffffff;
+  color: #00205b;
+  border: 2px solid #00b1e6;
+}
+
+.theme-australian .slot-selected {
+  background-color: #00b1e6;
+  color: #ffffff;
+  border-color: #00205b;
+}
+
+.theme-australian .slot-disabled {
+  background-color: #3a3a3a;
+  color: #808080;
+  border-color: #00b1e6;
+}
+
+.theme-australian .btn-primary {
+  background-color: #00b1e6;
+  border-color: #00205b;
+}
+
+.theme-australian .btn-outline-primary {
+  color: #00b1e6;
+  border-color: #00b1e6;
+}
+
+.theme-australian .btn-outline-primary:hover {
+  background-color: #00b1e6;
+  color: #ffffff;
+}
+
+.theme-rolandgarros {
+  position: relative;
+  background: url("images/rolandgarros.png") no-repeat center center fixed;
+  background-size: cover;
+  color: #ffffff;
+  min-height: 100vh;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.theme-rolandgarros::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* sfondo semi-trasparente */
+  z-index: 1;
+}
+
+/* Tutti gli elementi figli vengono portati sopra l’overlay */
+.theme-rolandgarros > * {
+  position: relative;
+  z-index: 2;
+}
+
+.theme-rolandgarros .slam-border {
+  border: 3px solid #17462b !important;
+}
+
+.theme-rolandgarros .card,
+.theme-rolandgarros .slot {
+  background-color: #ffffff;
+  color: #17462b;
+  border: 2px solid #b74f28;
+}
+
+.theme-rolandgarros .slot-selected {
+  background-color: #b74f28;
+  color: #ffffff;
+  border-color: #17462b;
+}
+
+.theme-rolandgarros .slot-disabled {
+  background-color: #3a3a3a;
+  color: #808080;
+  border-color: #b74f28;
+}
+
+.theme-rolandgarros .btn-primary {
+  background-color: #b74f28;
+  border-color: #17462b;
+}
+
+.theme-rolandgarros .btn-outline-primary {
+  color: #b74f28;
+  border-color: #b74f28;
+}
+
+.theme-rolandgarros .btn-outline-primary:hover {
+  background-color: #b74f28;
+  color: #ffffff;
+}
+
+.theme-wimbledon {
+  position: relative;
+  background: url("images/wimbledon.png") no-repeat center center fixed;
+  background-size: cover;
+  color: #ffffff;
+  min-height: 100vh;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.theme-wimbledon::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* sfondo semi-trasparente */
+  z-index: 1;
+}
+
+/* Tutti gli elementi figli vengono portati sopra l’overlay */
+.theme-wimbledon > * {
+  position: relative;
+  z-index: 2;
+}
+
+.theme-wimbledon .slam-border {
+  border: 3px solid #60269e !important;
+}
+
+.theme-wimbledon .card,
+.theme-wimbledon .slot {
+  background-color: #ffffff;
+  color: #1c3c18;
+  border: 2px solid #60269e;
+}
+
+.theme-wimbledon .slot-selected {
+  background-color: #60269e;
+  color: #ffffff;
+  border-color: #1c3c18;
+}
+
+.theme-wimbledon .slot-disabled {
+  background-color: #d3d3d3;
+  color: #666666;
+  border-color: #60269e;
+}
+
+.theme-wimbledon .btn-primary {
+  background-color: #60269e;
+  border-color: #1c3c18;
+}
+
+.theme-wimbledon .btn-outline-primary {
+  color: #60269e;
+  border-color: #60269e;
+}
+
+.theme-wimbledon .btn-outline-primary:hover {
+  background-color: #60269e;
+  color: #ffffff;
+}
+
+.theme-usopen {
+  position: relative;
+  background: url("images/usopen.png") no-repeat center center fixed;
+  background-size: cover;
+  color: #ffffff;
+  min-height: 100vh;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.theme-usopen::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* sfondo semi-trasparente */
+  z-index: 1;
+}
+
+/* Tutti gli elementi figli vengono portati sopra l’overlay */
+.theme-usopen > * {
+  position: relative;
+  z-index: 2;
+}
+
+.theme-usopen .slam-border {
+  border: 3px solid #ffb81c !important;
+}
+
+.theme-usopen .card,
+.theme-usopen .slot {
+  background-color: #ffffff;
+  color: #0c2340;
+  border: 2px solid #ffb81c;
+}
+
+.theme-usopen .slot-selected {
+  background-color: #ffb81c;
+  color: #0c2340;
+  border-color: #0c2340;
+}
+
+.theme-usopen .slot-disabled {
+  background-color: #ccc;
+  color: #666;
+  border-color: #ffb81c;
+}
+
+.theme-usopen .btn-primary {
+  background-color: #ffb81c;
+  border-color: #0c2340;
+  color: #0c2340;
+}
+
+.theme-usopen .btn-outline-primary {
+  color: #ffb81c;
+  border-color: #ffb81c;
+}
+
+.theme-usopen .btn-outline-primary:hover {
+  background-color: #ffb81c;
+  color: #0c2340;
+}
+
+.login-bg {
+  background-image: url("https://images.unsplash.com/photo-1567220731225-d8b05cf7e9e1?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
+  background-size: cover;
+  background-position: center;
+}
+
+/* === Sidebar === */
+.sidebar {
+  background-color: #0d47a1;
+  color: white;
+  min-height: 100vh;
+  padding: 1.5rem;
+}
+
+.sidebar .nav-link {
+  color: #cfd8dc;
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+.sidebar .nav-link.active,
+.sidebar .nav-link:hover {
+  color: white;
+  font-weight: 600;
+}
+
+/* === Card === */
+.dashboard-card {
+  background-color: white;
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.dashboard-card h5 {
+  color: #6c757d;
+  font-weight: 500;
+}
+
+.dashboard-card .value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #0d47a1;
+}
+
+/* === Chart & Utilization === */
+.chart-container {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  padding: 1.5rem;
+}
+
+.court-card {
+  height: 100%;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  border: 3px solid transparent;
+}
+
+/* Hover visivo */
+.court-card:hover {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.3);
+}
+
+/* Stile per la card selezionata */
+.court-card-selected {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 5px rgba(13, 110, 253, 0.6);
+}
+
+/* Default per desktop (uguale o sopra md) */
+.court-card .court-image {
+  height: 400px; /* ad esempio per desktop */
+  object-fit: cover;
+  border-top-left-radius: 0.375rem;
+  border-top-right-radius: 0.375rem;
+}
+
+/* Mobile e tablet (sotto md = max-width: 767.98px) */
+@media (max-width: 767.98px) {
+  .court-card .court-image {
+    height: 300px;
+  }
+}
+
+.court-card .card-body {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.border-primary {
+  box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.3);
+}
+
+.weekday {
+  font-size: 0.75rem; /* testo più piccolo */
+  min-width: 40px;
+  text-align: center;
+  cursor: pointer;
+  line-height: 1.2;
+}
+
+.weekday-selected {
+  font-weight: bold;
+  color: #0d6efd;
+}
+
+.weekday-label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  color: #888;
+}
+
+/* === Griglia oraria === */
+.slot {
+  width: 100%;
+  height: 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #ffffff;
+  border: 2px solid #0d6efd;
+  border-radius: 12px;
+  padding: 10px;
+  text-align: center;
+  cursor: pointer;
+  color: #0d6efd;
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
+}
+
+.slot div {
+  line-height: 1.2;
+  min-height: 1em;
+}
+
+.slot-disabled {
+  background-color: #1e1f2b;
+  color: #555;
+  cursor: not-allowed;
+}
+
+.slot-selected {
+  background-color: #0d6efd;
+  color: #fff;
+  border: 2px solid #0d6efd;
+}
+
+/* === Giorni settimana === */
+.weekday {
+  cursor: pointer;
+  color: #ccc;
+  font-weight: normal;
+  transition: color 0.2s ease-in-out;
+}
+
+.weekday-selected {
+  color: #0d6efd;
+  font-weight: bold;
+}
+
+.mobile-navbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  background-color: #fff;
+  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}

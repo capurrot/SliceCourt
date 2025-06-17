@@ -1,0 +1,229 @@
+import { Card, Row, Col, Button, Container } from "react-bootstrap";
+import { useSelector } from "react-redux";
+import { useRef, useState } from "react";
+import { format, addDays, subDays, startOfWeek, getDay } from "date-fns";
+import { it } from "date-fns/locale";
+import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
+
+const Prenota = () => {
+  const user = useSelector((state) => state.auth.user);
+  const [selectedCourt, setSelectedCourt] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const daysOfWeek = ["Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato", "Domenica"];
+  const bookingRef = useRef(null);
+  const courtRef = useRef(null);
+  const [selectedTimes, setSelectedTimes] = useState([]);
+  const duration = selectedTimes.length;
+
+  const courts = [
+    {
+      id: 1,
+      name: "Campo Esterno in sintetico",
+      image: "/images/campo1.png",
+    },
+    {
+      id: 2,
+      name: "Campo Coperto in sintetico",
+      image: "/images/campo2.png",
+    },
+  ];
+
+  const availableSlots = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00"];
+  const timeSlots = [
+    "08:00",
+    "09:00",
+    "10:00",
+    "11:00",
+    "12:00",
+    "13:00",
+    "14:00",
+    "15:00",
+    "16:00",
+    "17:00",
+    "18:00",
+    "19:00",
+    "20:00",
+    "21:00",
+    "22:00",
+  ];
+
+  const weekStart = startOfWeek(selectedDate, { weekStartsOn: 1 });
+  const weekDays = Array.from({ length: 7 }).map((_, i) => addDays(weekStart, i));
+  const selectedCourtObj = courts.find((c) => c.id === selectedCourt);
+  const pricePerHour = Number(selectedCourtObj?.price || 15);
+  const totalPrice = duration * pricePerHour;
+
+  const addOneHour = (timeStr) => {
+    const [hours, minutes] = timeStr.split(":").map(Number);
+    const date = new Date();
+    date.setHours(hours + 1, minutes, 0, 0);
+    return format(date, "HH:mm");
+  };
+
+  const handlePrenota = (date, time) => {
+    const formatted = format(date, "yyyy-MM-dd");
+    console.log("Prenotazione inviata:", {
+      campo: selectedCourtObj?.name,
+      giorno: formatted,
+      orario: time,
+    });
+    // Qui invia a backend o aggiorna lo stato globale
+  };
+
+  const handleCancel = () => {
+    setSelectedCourt(null);
+    setSelectedDate(new Date());
+    setSelectedTimes([]);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleCourt = (id) => {
+    setSelectedCourt(id);
+    setSelectedTimes([]);
+    setTimeout(() => {
+      courtRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, 150);
+  };
+
+  const handleSlotClick = (time) => {
+    if (!availableSlots.includes(time)) return;
+
+    const isSelected = selectedTimes.includes(time);
+
+    if (isSelected) {
+      // Deseleziona
+      setSelectedTimes(selectedTimes.filter((t) => t !== time));
+    } else {
+      // Ordina gli slot disponibili
+      const sortedSlots = availableSlots.sort();
+      const index = sortedSlots.indexOf(time);
+      const prev = sortedSlots[index - 1];
+      const next = sortedSlots[index + 1];
+
+      const canSelect = selectedTimes.length === 0 || selectedTimes.includes(prev) || selectedTimes.includes(next);
+
+      if (canSelect) {
+        setSelectedTimes([...selectedTimes, time].sort());
+      }
+
+      // Scroll dopo un piccolo delay
+      setTimeout(() => {
+        bookingRef.current?.scrollIntoView({ behavior: "smooth" });
+      }, 150);
+    }
+  };
+
+  return (
+    <div className="min-vh-100 py-4 px-2">
+      <div className="container pb-5">
+        {!selectedCourt && <h3 className="mb-3 text-center">{user?.name || "Utente"}, seleziona un campo</h3>}
+        {selectedCourt && <h3 className="mb-3 text-center">{user?.name || "Utente"}, seleziona un orario</h3>}
+        {/* Selezione campo */}
+        <Row className="g-4 mb-4">
+          {courts.map((court) =>
+            selectedCourt === null || selectedCourt === court.id ? (
+              <Col xs={12} md={selectedCourt === null ? 6 : 12} key={court.id}>
+                <Card
+                  className="shadow-sm h-100 court-card border-0 slam-border"
+                  onClick={() => handleCourt(court.id)}
+                  style={{ cursor: "pointer" }}
+                >
+                  <Card.Img variant="top" src={court.image} alt={court.name} className="court-image" />
+                  <Card.Body className="text-center">
+                    <Card.Title>{court.name}</Card.Title>
+                  </Card.Body>
+                </Card>
+              </Col>
+            ) : null
+          )}
+        </Row>
+        <div ref={courtRef} />
+        {/* Sezione slot visibile solo se campo selezionato */}
+        {selectedCourt && (
+          <>
+            {/* Griglia oraria */}
+            <Card className="shadow-sm slam-border">
+              {/* Navigazione settimana con Oggi */}
+              <div className="d-flex justify-content-between align-items-center my-3 px-2 week-nav-controls">
+                <Button variant="link" onClick={() => setSelectedDate((prev) => subDays(prev, 7))}>
+                  <FiChevronLeft size={20} />
+                </Button>
+
+                <Button variant="outline-primary" size="sm" onClick={() => setSelectedDate(new Date())}>
+                  Oggi
+                </Button>
+
+                <Button variant="link" onClick={() => setSelectedDate((prev) => addDays(prev, 7))}>
+                  <FiChevronRight size={20} />
+                </Button>
+              </div>
+
+              <div className="week-days d-flex justify-content-between align-items-center px-2 mb-3">
+                {weekDays.map((day, i) => {
+                  const isSelected = format(day, "yyyy-MM-dd") === format(selectedDate, "yyyy-MM-dd");
+                  return (
+                    <div
+                      key={i}
+                      className={`weekday-box text-center flex-fill ${isSelected ? "weekday-selected" : ""}`}
+                      onClick={() => setSelectedDate(day)}
+                    >
+                      <div className="weekday-label">{format(day, "EEE", { locale: it }).toUpperCase()}</div>
+                      <div>{format(day, "d")}</div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <Card.Body>
+                <Row xs={3} md={5} lg={6} className="g-3 justify-content-center mt-1">
+                  {timeSlots.map((time, idx) => {
+                    const isAvailable = availableSlots.includes(time);
+                    const isSelected = selectedTimes.includes(time);
+                    return (
+                      <Col key={idx} className="my-1">
+                        <div
+                          className={`slot ${
+                            !isAvailable ? "slot-disabled" : selectedTimes.includes(time) ? "slot-selected" : ""
+                          }`}
+                          onClick={() => handleSlotClick(time)}
+                        >
+                          <div>{time}</div>
+                          {isAvailable && !isSelected && <div className="small text-muted">1 rimanente</div>}
+                          {isSelected && <div className="small text-white">1 selezionato</div>}
+                        </div>
+                      </Col>
+                    );
+                  })}
+                </Row>
+              </Card.Body>
+            </Card>
+
+            {/* Bottone per prenotare */}
+            {selectedTimes.length > 0 && (
+              <div className="text-center mt-4 pb-4" ref={bookingRef}>
+                <h5 className="mb-2">
+                  Selezionato: <strong>{selectedCourtObj?.name}</strong> <br /> {daysOfWeek[getDay(selectedDate)]}
+                  <strong className="ms-2">{format(selectedDate, "dd/MM/yyyy")}</strong> <br />
+                  dalle <strong>{selectedTimes[0]}</strong> alle
+                  <strong className="ms-2">{addOneHour(selectedTimes[selectedTimes.length - 1])}</strong>
+                </h5>
+                <h5 className="mb-3">
+                  Totale: <strong>{duration}h</strong> × <strong>{pricePerHour} €</strong> ={" "}
+                  <span className="fw-bold text-primary">{totalPrice} €</span>
+                </h5>
+                <Button variant="success" size="lg" onClick={() => handlePrenota(selectedDate, selectedTimes)}>
+                  Prenota
+                </Button>
+                <Button variant="warning" size="lg" className="ms-2" onClick={() => handleCancel()}>
+                  Annulla
+                </Button>
+              </div>
+            )}
+          </>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default Prenota;
