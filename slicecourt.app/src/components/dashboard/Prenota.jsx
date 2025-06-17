@@ -6,7 +6,7 @@ import { it } from "date-fns/locale";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 
 const Prenota = () => {
-  const user = useSelector((state) => state.auth.user);
+  const user = useSelector((state) => state.auth.userData);
   const [selectedCourt, setSelectedCourt] = useState(null);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const daysOfWeek = ["Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato", "Domenica"];
@@ -115,9 +115,9 @@ const Prenota = () => {
 
   return (
     <div className="min-vh-100 py-4 px-2">
-      <div className="container pb-5">
-        {!selectedCourt && <h3 className="mb-3 text-center">{user?.name || "Utente"}, seleziona un campo</h3>}
-        {selectedCourt && <h3 className="mb-3 text-center">{user?.name || "Utente"}, seleziona un orario</h3>}
+      <div className="container mb-5">
+        {!selectedCourt && <h3 className="mb-3 text-center">{user?.nome || "Utente"}, seleziona un campo</h3>}
+        {selectedCourt && <h3 className="mb-3 text-center">{user?.nome || "Utente"}, seleziona un orario</h3>}
         {/* Selezione campo */}
         <Row className="g-4 mb-4">
           {courts.map((court) =>

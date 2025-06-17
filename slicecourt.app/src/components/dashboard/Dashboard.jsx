@@ -1,10 +1,10 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { Card, Row, Col, Button, Container } from "react-bootstrap";
 import { useSelector } from "react-redux";
-import { FiCalendar, FiUser, FiBarChart2, FiSun } from "react-icons/fi";
+import { FiCalendar, FiUser } from "react-icons/fi";
 
 const Dashboard = () => {
-  const user = useSelector((state) => state.auth.user);
+  const user = useSelector((state) => state.auth.userData);
   const navigate = useNavigate();
 
   return (
@@ -12,7 +12,7 @@ const Dashboard = () => {
       <Container className="py-4">
         {/* Titolo di benvenuto */}
         <h3 className="mb-4 text-center">
-          Ciao {user?.name || "Utente"}, <br /> pronto per giocare?
+          Ciao {user?.nome ?? "Utente"}, <br /> pronto per giocare?
         </h3>
 
         <Card className="mb-4 shadow-sm border-0 slam-border">
