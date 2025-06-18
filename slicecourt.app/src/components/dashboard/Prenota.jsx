@@ -307,31 +307,36 @@ const Prenota = () => {
               </Card.Body>
             </Card>
 
-            {/* Bottone per prenotare */}
             {selectedTimes.length > 0 && (
-              <div className="text-center mt-5 pb-4" ref={bookingRef}>
-                <h5 className="mb-2">Selezionato:</h5>
-                <h5 className="mb-2">
-                  <strong>{selectedCourtObj?.name}</strong>
-                </h5>
-                <h5 className="mb-2">
-                  {daysOfWeek[getDay(selectedDate)]} <br />{" "}
-                  <strong className="ms-2">{format(selectedDate, "dd/MM/yyyy")}</strong> <br />
-                  dalle <strong>{selectedTimes[0]}</strong> alle
-                  <strong className="ms-2">{addOneHour(selectedTimes[selectedTimes.length - 1])}</strong>
-                </h5>
-                <h5 className="mb-3">
-                  Totale: <strong>{duration}h</strong> × <strong>{pricePerHour} €</strong> ={" "}
-                  <span className="fw-bold text-primary">{totalPrice} €</span>
-                </h5>
-                <Button variant="success" size="lg" onClick={() => handlePrenota(selectedDate, selectedTimes)}>
-                  Prenota
-                </Button>
-                <Button variant="warning" size="lg" className="ms-2" onClick={() => handleCancel()}>
-                  Annulla
-                </Button>
-              </div>
+              <Card className="mt-4 shadow-sm slam-border" ref={bookingRef}>
+                <Card.Body className="text-center">
+                  <h5 className="mb-2">Selezionato:</h5>
+                  <h5 className="mb-2">
+                    <strong>{selectedCourtObj?.name}</strong>
+                  </h5>
+                  <h5 className="mb-2">
+                    {daysOfWeek[getDay(selectedDate)]} <br />
+                    <strong className="ms-2">{format(selectedDate, "dd/MM/yyyy")}</strong> <br />
+                    dalle <strong>{selectedTimes[0]}</strong> alle
+                    <strong className="ms-2">{addOneHour(selectedTimes[selectedTimes.length - 1])}</strong>
+                  </h5>
+                  <h5 className="mb-4">
+                    Totale: <strong>{duration}h</strong> × <strong>{pricePerHour} €</strong> ={" "}
+                    <span className="fw-bold fs-1 text-danger">{totalPrice} €</span>
+                  </h5>
+
+                  <div className="d-flex justify-content-center gap-3">
+                    <Button variant="success" size="lg" onClick={() => handlePrenota(selectedDate, selectedTimes)}>
+                      Prenota
+                    </Button>
+                    <Button variant="warning" size="lg" onClick={handleCancel}>
+                      Annulla
+                    </Button>
+                  </div>
+                </Card.Body>
+              </Card>
             )}
+
             {showAlert && (
               <Alert
                 variant={alertMessage.startsWith("✅") ? "success" : "danger"}

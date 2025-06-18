@@ -1,11 +1,25 @@
 import { useNavigate } from "react-router";
 import { Card, Row, Col, Button, Container } from "react-bootstrap";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { FiCalendar, FiUser } from "react-icons/fi";
+import { useEffect } from "react";
+import { fetchNextBooking } from "../../redux/actions/bookings";
+import { format } from "date-fns";
+import { it } from "date-fns/locale";
+import { FaCalendarAlt, FaClock, FaMapMarkerAlt } from "react-icons/fa";
 
 const Dashboard = () => {
   const user = useSelector((state) => state.auth.userData);
+  const { nextBooking } = useSelector((state) => state.booking);
   const navigate = useNavigate();
+
+  console.log(nextBooking);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchNextBooking());
+  }, [dispatch]);
 
   return (
     <div className="min-vh-100 pb-4 px-2">
@@ -15,27 +29,40 @@ const Dashboard = () => {
           Ciao {user?.nome ?? "Utente"}, <br /> pronto per giocare?
         </h3>
 
-        <Card className="mb-4 shadow-sm border-0 slam-border">
-          <Card.Body>
-            <div className="d-flex justify-content-between align-items-center mb-3 flex-column flex-md-row">
-              <div className="text-center text-md-start">
-                <h5 className="fw-bold mb-2">🎾 Prossima prenotazione</h5>
-                <p className="mb-1">
-                  📅 <strong>Martedì 18 Giugno</strong> - <strong>18:00</strong>
-                </p>
-                <p className="mb-1">
-                  🏟️ <strong>Campo Coperto in sintetico</strong>
-                </p>
-                <span className="badge bg-success">Confermata</span>
+        {nextBooking ? (
+          <Card className="mb-4 shadow-sm border-0 slam-border">
+            <Card.Body>
+              <div className="d-flex justify-content-between align-items-center flex-column flex-md-row mb-3">
+                {/* Parte sinistra */}
+                <div className="text-center text-md-start">
+                  <h5 className="fw-bold mb-3">🎾 Prossima prenotazione</h5>
+                  <p className="mb-2">
+                    <FaCalendarAlt className="me-2" />
+                    <strong>{format(new Date(nextBooking.date), "EEEE dd MMMM", { locale: it })}</strong>
+                  </p>
+                  <p className="mb-2">
+                    <FaClock className="me-2 " />
+                    <strong>{nextBooking.startTime.slice(0, 5)}</strong>
+                  </p>
+                  <p className="mb-2">
+                    <FaMapMarkerAlt className="me-2 " />
+                    <strong>{nextBooking.courtName}</strong>
+                  </p>
+                  <span className="badge bg-success mt-2">Confermata</span>
+                </div>
+
+                {/* Parte destra */}
+                <div className="mt-4 mt-md-0 text-center text-md-end">
+                  <Button variant="primary" className="px-4">
+                    Gestisci
+                  </Button>
+                </div>
               </div>
-              <div className="mt-3 mt-md-0 text-center text-md-end">
-                <Button variant="primary" className="px-4">
-                  Gestisci
-                </Button>
-              </div>
-            </div>
-          </Card.Body>
-        </Card>
+            </Card.Body>
+          </Card>
+        ) : (
+          <p className="text-muted">Nessuna prenotazione imminente.</p>
+        )}
 
         {/* Azioni rapide */}
         <h5 className="mb-3">⚡ Azioni rapide</h5>

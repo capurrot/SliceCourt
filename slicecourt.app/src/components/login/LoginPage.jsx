@@ -8,6 +8,7 @@ import { clearError } from "../../redux/reducers/authSlice";
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { isAuthenticated } = useSelector((state) => state.auth);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -35,6 +36,12 @@ const LoginPage = () => {
       // niente setErrorMessage
     }
   };
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/dashboard");
+    }
+  }, [isAuthenticated, navigate]);
 
   return (
     <Container fluid className="login-bg d-flex align-items-center justify-content-center vh-100">

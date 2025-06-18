@@ -183,7 +183,7 @@ body {
 }
 
 .theme-wimbledon .slot-disabled {
-  background-color: #d3d3d3;
+  background-color: #3a3a3a;
   color: #666666;
 }
 
@@ -248,7 +248,7 @@ body {
 }
 
 .theme-usopen .slot-disabled {
-  background-color: #ccc;
+  background-color: #3a3a3a;
   color: #666;
 }
 
@@ -413,7 +413,7 @@ body {
 }
 
 .slot-disabled {
-  background-color: #1e1f2b;
+  background-color: #3a3a3a;
   color: #555;
   cursor: not-allowed;
 }

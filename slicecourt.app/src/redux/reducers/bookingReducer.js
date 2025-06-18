@@ -4,6 +4,9 @@ import {
   FETCH_BOOKINGS_FAILURE,
   FETCH_BOOKINGS_START,
   FETCH_BOOKINGS_SUCCESS,
+  FETCH_NEXT_BOOKING_FAILURE,
+  FETCH_NEXT_BOOKING_START,
+  FETCH_NEXT_BOOKING_SUCCESS,
   FETCH_OCCUPIED_BOOKINGS_FAILURE,
   FETCH_OCCUPIED_BOOKINGS_START,
   FETCH_OCCUPIED_BOOKINGS_SUCCESS,
@@ -14,6 +17,7 @@ const initialState = {
   occupiedBookings: [],
   loading: false,
   error: null,
+  nextBooking: null,
 };
 
 const bookingReducer = (state = initialState, action) => {
@@ -54,6 +58,15 @@ const bookingReducer = (state = initialState, action) => {
         ...state,
         error: action.payload,
       };
+    case FETCH_NEXT_BOOKING_START:
+      return { ...state, loading: true, error: null };
+
+    case FETCH_NEXT_BOOKING_SUCCESS:
+      return { ...state, loading: false, nextBooking: action.payload };
+
+    case FETCH_NEXT_BOOKING_FAILURE:
+      return { ...state, loading: false, error: action.payload };
+
     default:
       return state;
   }
