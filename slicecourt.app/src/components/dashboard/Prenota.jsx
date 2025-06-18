@@ -1,9 +1,11 @@
-import { Card, Row, Col, Button, Container } from "react-bootstrap";
-import { useSelector } from "react-redux";
-import { useRef, useState } from "react";
+import { Card, Row, Col, Button, Container, Alert } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useRef, useState } from "react";
 import { format, addDays, subDays, startOfWeek, getDay } from "date-fns";
 import { it } from "date-fns/locale";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import { fetchCourts } from "../../redux/actions/courts";
+import { createBooking } from "../../redux/actions/bookings";
 
 const Prenota = () => {
   const user = useSelector((state) => state.auth.userData);
@@ -15,19 +17,14 @@ const Prenota = () => {
   const courtRef = useRef(null);
   const [selectedTimes, setSelectedTimes] = useState([]);
   const duration = selectedTimes.length;
+  const dispatch = useDispatch();
+  const { courts, loading, error } = useSelector((state) => state.courts);
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
 
-  const courts = [
-    {
-      id: 1,
-      name: "Campo Esterno in sintetico",
-      image: "/images/campo1.png",
-    },
-    {
-      id: 2,
-      name: "Campo Coperto in sintetico",
-      image: "/images/campo2.png",
-    },
-  ];
+  useEffect(() => {
+    dispatch(fetchCourts());
+  }, [dispatch]);
 
   const availableSlots = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00"];
   const timeSlots = [
@@ -61,15 +58,34 @@ const Prenota = () => {
     return format(date, "HH:mm");
   };
 
-  const handlePrenota = (date, time) => {
-    const formatted = format(date, "yyyy-MM-dd");
-    console.log("Prenotazione inviata:", {
-      campo: selectedCourtObj?.name,
-      giorno: formatted,
-      orario: time,
-    });
-    // Qui invia a backend o aggiorna lo stato globale
+  const handlePrenota = async (date, timeArray) => {
+    if (!selectedCourtObj || timeArray.length === 0) return;
+
+    const formattedDate = format(date, "yyyy-MM-dd");
+    const start = timeArray[0];
+    const end = addOneHour(timeArray[timeArray.length - 1]);
+
+    const payload = {
+      courtId: selectedCourtObj.id,
+      userId: user?.id,
+      date: formattedDate,
+      startTime: parseTimeString(start),
+      endTime: parseTimeString(end),
+      endTimeAfterStartTime: true,
+    };
+
+    try {
+      await dispatch(createBooking(payload));
+      setAlertMessage("✅ Prenotazione effettuata con successo!");
+      setShowAlert(true);
+      handleCancel();
+    } catch (err) {
+      setAlertMessage("❌ Errore durante la prenotazione." + err.message);
+      setShowAlert(true);
+    }
   };
+
+  const parseTimeString = (timeStr) => timeStr;
 
   const handleCancel = () => {
     setSelectedCourt(null);
@@ -127,7 +143,7 @@ const Prenota = () => {
                   onClick={() => handleCourt(court.id)}
                   style={{ cursor: "pointer" }}
                 >
-                  <Card.Img variant="top" src={court.image} alt={court.name} className="court-image" />
+                  <Card.Img variant="top" src={court.urlImage} alt={court.name} className="court-image" />
                   <Card.Body className="text-center">
                     <Card.Title>{court.name}</Card.Title>
                   </Card.Body>
@@ -241,6 +257,20 @@ const Prenota = () => {
           </>
         )}
       </div>
+      {console.log("COURTS", courts)}
+      {loading && <p className="text-center">Caricamento campi...</p>}
+      {error && <p className="text-danger text-center">{error}</p>}
+      {!loading && courts.length === 0 && <p className="text-center">Nessun campo disponibile.</p>}
+      {showAlert && (
+        <Alert
+          variant={alertMessage.startsWith("✅") ? "success" : "danger"}
+          onClose={() => setShowAlert(false)}
+          dismissible
+          className="text-center"
+        >
+          {alertMessage}
+        </Alert>
+      )}
     </div>
   );
 };
