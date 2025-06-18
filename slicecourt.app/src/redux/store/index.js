@@ -3,7 +3,7 @@ import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
 import authReducer from "../reducers/authSlice";
-import themeReducer from "../reducers/themeSlice"; // <-- assicurati che esista
+import themeReducer from "../reducers/themeSlice"; //
 
 // Componi il root reducer
 const rootReducer = combineReducers({
@@ -25,7 +25,7 @@ export const store = configureStore({
   reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
-      serializableCheck: false, // necessario per redux-persist
+      serializableCheck: false,
     }),
 });
 
