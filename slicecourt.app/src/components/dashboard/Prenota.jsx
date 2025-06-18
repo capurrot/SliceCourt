@@ -5,7 +5,7 @@ import { format, addDays, subDays, startOfWeek, getDay } from "date-fns";
 import { it } from "date-fns/locale";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { fetchCourts } from "../../redux/actions/courts";
-import { createBooking } from "../../redux/actions/bookings";
+import { createBooking, fetchOccupiedBookings } from "../../redux/actions/bookings";
 
 const Prenota = () => {
   const user = useSelector((state) => state.auth.userData);
@@ -18,7 +18,9 @@ const Prenota = () => {
   const [selectedTimes, setSelectedTimes] = useState([]);
   const duration = selectedTimes.length;
   const dispatch = useDispatch();
+
   const { courts, loading, error } = useSelector((state) => state.courts);
+  const { occupiedBookings } = useSelector((state) => state.booking);
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
 
@@ -26,7 +28,23 @@ const Prenota = () => {
     dispatch(fetchCourts());
   }, [dispatch]);
 
-  const availableSlots = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00"];
+  useEffect(() => {
+    if (selectedCourt && selectedDate) {
+      const formattedDate = format(selectedDate, "yyyy-MM-dd");
+      dispatch(fetchOccupiedBookings(selectedCourt, formattedDate));
+    }
+  }, [dispatch, selectedCourt, selectedDate]);
+
+  useEffect(() => {
+    if (showAlert) {
+      const timer = setTimeout(() => {
+        setShowAlert(false);
+      }, 3000); // ⏱️ 3 secondi
+
+      return () => clearTimeout(timer); // pulizia
+    }
+  }, [showAlert]);
+
   const timeSlots = [
     "08:00",
     "09:00",
@@ -44,6 +62,34 @@ const Prenota = () => {
     "21:00",
     "22:00",
   ];
+  const getAvailableSlots = () => {
+    if (!occupiedBookings) return timeSlots;
+
+    const getTimeSlotsInRange = (start, end) => {
+      if (!start || !end) return [];
+
+      const startFormatted = start.slice(0, 5);
+      const endFormatted = end.slice(0, 5);
+
+      const startIndex = timeSlots.indexOf(startFormatted);
+      const endIndex = timeSlots.indexOf(endFormatted);
+
+      // ⛔️ Se endIndex è -1 (es. "22:00" non trovato), ritorna solo il primo
+      if (startIndex === -1) return [];
+
+      if (endIndex === -1) {
+        return [startFormatted]; // fallback: solo lo slot iniziale
+      }
+
+      return timeSlots.slice(startIndex, endIndex); // endIndex escluso
+    };
+
+    const occupiedSlots = occupiedBookings.flatMap((b) => getTimeSlotsInRange(b.startTime, b.endTime));
+
+    return timeSlots.filter((slot) => !occupiedSlots.includes(slot));
+  };
+
+  const availableSlots = getAvailableSlots();
 
   const weekStart = startOfWeek(selectedDate, { weekStartsOn: 1 });
   const weekDays = Array.from({ length: 7 }).map((_, i) => addDays(weekStart, i));
@@ -78,9 +124,14 @@ const Prenota = () => {
       await dispatch(createBooking(payload));
       setAlertMessage("✅ Prenotazione effettuata con successo!");
       setShowAlert(true);
-      handleCancel();
+
+      const formattedDate = format(selectedDate, "yyyy-MM-dd");
+      dispatch(fetchOccupiedBookings(selectedCourt, formattedDate));
+
+      setSelectedTimes([]);
+      setGotoBooking(false);
     } catch (err) {
-      setAlertMessage("❌ Errore durante la prenotazione." + err.message);
+      setAlertMessage("❌ Errore durante la prenotazione. " + err.message);
       setShowAlert(true);
     }
   };
@@ -194,16 +245,39 @@ const Prenota = () => {
                   {timeSlots.map((time, idx) => {
                     const isAvailable = availableSlots.includes(time);
                     const isSelected = selectedTimes.includes(time);
+
+                    const isMine = occupiedBookings.some((b) => {
+                      if (!b.mine || !b.startTime || !b.endTime) return false;
+                      const start = b.startTime.slice(0, 5);
+                      const end = b.endTime.slice(0, 5);
+                      const index = timeSlots.indexOf(time);
+                      const startIndex = timeSlots.indexOf(start);
+                      const endIndex = timeSlots.indexOf(end);
+                      // ✅ include anche endTime
+                      return index >= startIndex && index < (endIndex === -1 ? startIndex + 1 : endIndex);
+                    });
+
                     return (
                       <Col key={idx} className="my-0">
                         <div
                           className={`slot border-0 ${
-                            !isAvailable ? "slot-disabled" : selectedTimes.includes(time) ? "slot-selected" : ""
+                            isMine
+                              ? "bg-success text-white"
+                              : !isAvailable
+                              ? "slot-disabled"
+                              : isSelected
+                              ? "slot-selected"
+                              : ""
                           }`}
                           style={{ borderRadius: "0", borderSize: "1px" }}
                           onClick={() => handleSlotClick(time)}
                         >
                           <div>{time}</div>
+                          {!isAvailable && isMine && (
+                            <div className="text-white" style={{ fontSize: "0.8rem" }}>
+                              Prenotato
+                            </div>
+                          )}
                           {isAvailable && !isSelected && (
                             <div className="text-muted" style={{ fontSize: "0.8rem" }}>
                               1 rimanente
@@ -236,8 +310,12 @@ const Prenota = () => {
             {/* Bottone per prenotare */}
             {selectedTimes.length > 0 && (
               <div className="text-center mt-5 pb-4" ref={bookingRef}>
+                <h5 className="mb-2">Selezionato:</h5>
                 <h5 className="mb-2">
-                  Selezionato: <strong>{selectedCourtObj?.name}</strong> <br /> {daysOfWeek[getDay(selectedDate)]}
+                  <strong>{selectedCourtObj?.name}</strong>
+                </h5>
+                <h5 className="mb-2">
+                  {daysOfWeek[getDay(selectedDate)]} <br />{" "}
                   <strong className="ms-2">{format(selectedDate, "dd/MM/yyyy")}</strong> <br />
                   dalle <strong>{selectedTimes[0]}</strong> alle
                   <strong className="ms-2">{addOneHour(selectedTimes[selectedTimes.length - 1])}</strong>
@@ -254,23 +332,21 @@ const Prenota = () => {
                 </Button>
               </div>
             )}
+            {showAlert && (
+              <Alert
+                variant={alertMessage.startsWith("✅") ? "success" : "danger"}
+                onClose={() => setShowAlert(false)}
+                className="text-center mt-3"
+              >
+                {alertMessage}
+              </Alert>
+            )}
           </>
         )}
       </div>
-      {console.log("COURTS", courts)}
       {loading && <p className="text-center">Caricamento campi...</p>}
       {error && <p className="text-danger text-center">{error}</p>}
       {!loading && courts.length === 0 && <p className="text-center">Nessun campo disponibile.</p>}
-      {showAlert && (
-        <Alert
-          variant={alertMessage.startsWith("✅") ? "success" : "danger"}
-          onClose={() => setShowAlert(false)}
-          dismissible
-          className="text-center"
-        >
-          {alertMessage}
-        </Alert>
-      )}
     </div>
   );
 };
