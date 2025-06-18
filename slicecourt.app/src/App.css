@@ -40,21 +40,21 @@ body {
 
 .theme-australian .card,
 .theme-australian .slot {
-  background-color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   color: #00205b;
-  border: 2px solid #00b1e6;
+  outline: 1px solid #00205b;
 }
 
 .theme-australian .slot-selected {
   background-color: #00b1e6;
   color: #ffffff;
-  border-color: #00205b;
 }
 
 .theme-australian .slot-disabled {
   background-color: #3a3a3a;
   color: #808080;
-  border-color: #00b1e6;
 }
 
 .theme-australian .btn-primary {
@@ -105,21 +105,21 @@ body {
 
 .theme-rolandgarros .card,
 .theme-rolandgarros .slot {
-  background-color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   color: #17462b;
-  border: 2px solid #b74f28;
+  outline: 1px solid #17462b;
 }
 
 .theme-rolandgarros .slot-selected {
   background-color: #b74f28;
   color: #ffffff;
-  border-color: #17462b;
 }
 
 .theme-rolandgarros .slot-disabled {
   background-color: #3a3a3a;
   color: #808080;
-  border-color: #b74f28;
 }
 
 .theme-rolandgarros .btn-primary {
@@ -170,21 +170,21 @@ body {
 
 .theme-wimbledon .card,
 .theme-wimbledon .slot {
-  background-color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   color: #1c3c18;
-  border: 2px solid #60269e;
+  outline: 1px solid #1c3c18;
 }
 
 .theme-wimbledon .slot-selected {
   background-color: #60269e;
   color: #ffffff;
-  border-color: #1c3c18;
 }
 
 .theme-wimbledon .slot-disabled {
   background-color: #d3d3d3;
   color: #666666;
-  border-color: #60269e;
 }
 
 .theme-wimbledon .btn-primary {
@@ -235,21 +235,21 @@ body {
 
 .theme-usopen .card,
 .theme-usopen .slot {
-  background-color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   color: #0c2340;
-  border: 2px solid #ffb81c;
+  outline: 1px solid #0c2340;
 }
 
 .theme-usopen .slot-selected {
   background-color: #ffb81c;
   color: #0c2340;
-  border-color: #0c2340;
 }
 
 .theme-usopen .slot-disabled {
   background-color: #ccc;
   color: #666;
-  border-color: #ffb81c;
 }
 
 .theme-usopen .btn-primary {
@@ -391,24 +391,23 @@ body {
 /* === Griglia oraria === */
 .slot {
   width: 100%;
-  height: 80px;
+  height: 60px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   background-color: #ffffff;
-  border: 2px solid #0d6efd;
   border-radius: 12px;
-  padding: 10px;
+  padding: 0;
   text-align: center;
   cursor: pointer;
-  color: #0d6efd;
   font-weight: 500;
   transition: all 0.2s ease-in-out;
+  border: none;
 }
 
 .slot div {
-  line-height: 1.2;
+  line-height: 1.2em;
   min-height: 1em;
 }
 
@@ -421,7 +420,6 @@ body {
 .slot-selected {
   background-color: #0d6efd;
   color: #fff;
-  border: 2px solid #0d6efd;
 }
 
 /* === Giorni settimana === */

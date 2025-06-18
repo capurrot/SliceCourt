@@ -6,9 +6,10 @@ import { it } from "date-fns/locale";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 
 const Prenota = () => {
-  const user = useSelector((state) => state.auth.user);
+  const user = useSelector((state) => state.auth.userData);
   const [selectedCourt, setSelectedCourt] = useState(null);
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [gotoBooking, setGotoBooking] = useState(false);
   const daysOfWeek = ["Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato", "Domenica"];
   const bookingRef = useRef(null);
   const courtRef = useRef(null);
@@ -74,6 +75,7 @@ const Prenota = () => {
     setSelectedCourt(null);
     setSelectedDate(new Date());
     setSelectedTimes([]);
+    setGotoBooking(false);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -106,18 +108,15 @@ const Prenota = () => {
         setSelectedTimes([...selectedTimes, time].sort());
       }
 
-      // Scroll dopo un piccolo delay
-      setTimeout(() => {
-        bookingRef.current?.scrollIntoView({ behavior: "smooth" });
-      }, 150);
+      setGotoBooking(true);
     }
   };
 
   return (
     <div className="min-vh-100 py-4 px-2">
-      <div className="container pb-5">
-        {!selectedCourt && <h3 className="mb-3 text-center">{user?.name || "Utente"}, seleziona un campo</h3>}
-        {selectedCourt && <h3 className="mb-3 text-center">{user?.name || "Utente"}, seleziona un orario</h3>}
+      <div className="container mb-5">
+        {!selectedCourt && <h3 className="mb-3 text-center">{user?.nome || "Utente"}, seleziona un campo</h3>}
+        {selectedCourt && <h3 className="mb-3 text-center">{user?.nome || "Utente"}, seleziona un orario</h3>}
         {/* Selezione campo */}
         <Row className="g-4 mb-4">
           {courts.map((court) =>
@@ -149,7 +148,7 @@ const Prenota = () => {
                   <FiChevronLeft size={20} />
                 </Button>
 
-                <Button variant="outline-primary" size="sm" onClick={() => setSelectedDate(new Date())}>
+                <Button className="btn-primary" size="sm" onClick={() => setSelectedDate(new Date())}>
                   Oggi
                 </Button>
 
@@ -175,32 +174,52 @@ const Prenota = () => {
               </div>
 
               <Card.Body>
-                <Row xs={3} md={5} lg={6} className="g-3 justify-content-center mt-1">
+                <Row xs={3} md={5} lg={6} className="g-0 justify-content-center mt-0 border-0">
                   {timeSlots.map((time, idx) => {
                     const isAvailable = availableSlots.includes(time);
                     const isSelected = selectedTimes.includes(time);
                     return (
-                      <Col key={idx} className="my-1">
+                      <Col key={idx} className="my-0">
                         <div
-                          className={`slot ${
+                          className={`slot border-0 ${
                             !isAvailable ? "slot-disabled" : selectedTimes.includes(time) ? "slot-selected" : ""
                           }`}
+                          style={{ borderRadius: "0", borderSize: "1px" }}
                           onClick={() => handleSlotClick(time)}
                         >
                           <div>{time}</div>
-                          {isAvailable && !isSelected && <div className="small text-muted">1 rimanente</div>}
-                          {isSelected && <div className="small text-white">1 selezionato</div>}
+                          {isAvailable && !isSelected && (
+                            <div className="text-muted" style={{ fontSize: "0.8rem" }}>
+                              1 rimanente
+                            </div>
+                          )}
+                          {isSelected && <div style={{ fontSize: "0.8rem" }}>1 selezionato</div>}
                         </div>
                       </Col>
                     );
                   })}
                 </Row>
+                {gotoBooking ? (
+                  <Button
+                    className="mt-3 d-flex mx-auto"
+                    onClick={() => bookingRef.current?.scrollIntoView({ behavior: "smooth" })}
+                  >
+                    Conferma la selezione
+                  </Button>
+                ) : (
+                  <Button
+                    className="mt-3 d-flex mx-auto"
+                    onClick={() => bookingRef.current?.scrollIntoView({ behavior: "smooth" })}
+                  >
+                    Seleziona un orario
+                  </Button>
+                )}
               </Card.Body>
             </Card>
 
             {/* Bottone per prenotare */}
             {selectedTimes.length > 0 && (
-              <div className="text-center mt-4 pb-4" ref={bookingRef}>
+              <div className="text-center mt-5 pb-4" ref={bookingRef}>
                 <h5 className="mb-2">
                   Selezionato: <strong>{selectedCourtObj?.name}</strong> <br /> {daysOfWeek[getDay(selectedDate)]}
                   <strong className="ms-2">{format(selectedDate, "dd/MM/yyyy")}</strong> <br />
